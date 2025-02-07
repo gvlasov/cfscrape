@@ -57,7 +57,9 @@ class Cfscrape
 
     protected $delay;
 
-    public function __construct()
+    public function __construct(
+        protected Client $client
+    )
     {
         $this->headers = $this->getDefaultHeaders();
     }
@@ -151,7 +153,7 @@ class Cfscrape
     {
         try {
             $option['headers'] = array_merge($this->headers, $option['headers'] ?? []);
-            $client   = new Client();
+            $client   = $this->client;
             $response = $client->request($method, $url, $option);
         } catch (RequestException $exception) {
             $response = $exception->getResponse();
@@ -364,9 +366,9 @@ EOF;
     /**
      * @return \Cfscrape\Cfscrape
      */
-    public static function createScraper()
+    public static function createScraper(Client $client)
     {
-        $scraper = new self();
+        $scraper = new self($client);
 
         return $scraper;
     }
